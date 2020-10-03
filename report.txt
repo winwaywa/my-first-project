@@ -1,0 +1,29 @@
+Imports System.Data.OleDb
+Public Class FormBaoCao
+    Private con As OleDbConnection
+    Private WithEvents danh_sach As BindingManagerBase
+    Public lenh As String
+    Private Sub FormBaoCao_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim constring As String = "Provider=SQLOLEDB;Data Source=DESKTOP-P0O98D5;Integrated Security=SSPI;Initial Catalog=QuanLiThuoc;"
+        con = New OleDbConnection(constring)
+        Hienthi()
+    End Sub
+    Private Sub Hienthi()
+        lenh = "select * from Thuoc"
+        'Command dùng để thực hiện câu lệnh truy vấn
+        Dim cmd As New OleDbCommand(lenh, con)
+        con.Open()
+        Dim bangdoc As OleDbDataReader = cmd.ExecuteReader 'Chứa câu truy vấn
+        Dim data As New DataTable("Thuoc") 'Nhận kết quả các dong đọc vào data
+        data.Load(bangdoc, LoadOption.OverwriteChanges)
+        con.Close()
+        ReportViewer1.LocalReport.DataSources.Clear()
+        Dim newDataSource As New Microsoft.Reporting.WinForms.ReportDataSource("DataSet1", data)
+        ReportViewer1.LocalReport.DataSources.Add(newDataSource)
+        ReportViewer1.LocalReport.ReportPath = "E:\Vidu\QuanLiThuoc\QuanLiThuoc\ReportThuoc.rdlc"
+        Me.ReportViewer1.RefreshReport()
+    End Sub
+    Private Sub ReportViewer1_Load(sender As Object, e As EventArgs)
+
+    End Sub
+End Class
